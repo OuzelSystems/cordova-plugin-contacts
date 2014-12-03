@@ -27,6 +27,7 @@ import org.json.JSONObject;
 public class ContactInfoDTO {
 
  String displayName;
+ String groupMembership;
  JSONObject name;
  JSONArray organizations;
  JSONArray addresses;
@@ -43,6 +44,7 @@ public class ContactInfoDTO {
  public ContactInfoDTO() {
 
   displayName = "";
+  groupMembership = "";
   name = new JSONObject();
   organizations = new JSONArray();
   addresses = new JSONArray();

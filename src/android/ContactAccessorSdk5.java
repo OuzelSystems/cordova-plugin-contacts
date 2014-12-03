@@ -86,6 +86,7 @@ public class ContactAccessorSdk5 extends ContactAccessor {
     static {
         dbMap.put("id", ContactsContract.Data.CONTACT_ID);
         dbMap.put("displayName", ContactsContract.Contacts.DISPLAY_NAME);
+        dbMap.put("groupMembership", ContactsContract.CommonDataKinds.GroupMembership.GROUP_ROW_ID);
         dbMap.put("name", ContactsContract.CommonDataKinds.StructuredName.DISPLAY_NAME);
         dbMap.put("name.formatted", ContactsContract.CommonDataKinds.StructuredName.DISPLAY_NAME);
         dbMap.put("name.familyName", ContactsContract.CommonDataKinds.StructuredName.FAMILY_NAME);
@@ -260,6 +261,7 @@ public class ContactAccessorSdk5 extends ContactAccessor {
         if (isRequired("photos", populate)) {
             columnsToFetch.add(ContactsContract.CommonDataKinds.Photo._ID);
         }
+        columnsToFetch.add(ContactsContract.CommonDataKinds.GroupMembership.GROUP_ROW_ID);
         
         // Do the id query
         Cursor c = mApp.getActivity().getContentResolver().query(ContactsContract.Data.CONTENT_URI,
@@ -390,6 +392,9 @@ public class ContactAccessorSdk5 extends ContactAccessor {
                     
                     if (mimetype.equals(ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE) && isRequired("name", populate)) {
                         contact.put("displayName", c.getString(colDisplayName));
+                    }
+                    if (mimetype.equals(ContactsContract.CommonDataKinds.GroupMembership.CONTENT_ITEM_TYPE)) {
+                        contact.put("groupMembership", c.getString(colGroupIndex));
                     }
 
                     if (mimetype.equals(ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE)

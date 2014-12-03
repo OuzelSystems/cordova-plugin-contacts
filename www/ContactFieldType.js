@@ -29,6 +29,7 @@
         country:        "country",
         department:     "department",
         displayName:    "displayName",
+        groupMembership:"groupMembership",
         emails:         "emails",
         familyName:     "familyName",
         formatted:      "formatted",
