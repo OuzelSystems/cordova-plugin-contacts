@@ -17,6 +17,6 @@
          under the License.
 -->
 
-# org.apache.cordova.contacts
+# com.evernym.cordova.contacts
 
 Plugin documentation: [doc/index.md](doc/index.md)
