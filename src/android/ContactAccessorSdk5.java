@@ -345,6 +345,7 @@ public class ContactAccessorSdk5 extends ContactAccessor {
         int colNickname = c.getColumnIndex(ContactsContract.CommonDataKinds.Nickname.NAME);
         int colBirthday = c.getColumnIndex(ContactsContract.CommonDataKinds.Event.START_DATE);
         int colEventType = c.getColumnIndex(ContactsContract.CommonDataKinds.Event.TYPE);
+        int colGroupIndex = c.getColumnIndex(ContactsContract.Data.DATA1);
 
         if (c.getCount() > 0) {
             while (c.moveToNext() && (contacts.length() <= (limit - 1))) {
