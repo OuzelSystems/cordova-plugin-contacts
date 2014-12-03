@@ -16,7 +16,7 @@
        specific language governing permissions and limitations
        under the License.
 */
-package org.apache.cordova.contacts;
+package com.evernym.cordova.contacts;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;

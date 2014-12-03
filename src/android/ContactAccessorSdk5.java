@@ -17,7 +17,7 @@
        under the License.
 */
  
-package org.apache.cordova.contacts;
+package com.evernym.cordova.contacts;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;

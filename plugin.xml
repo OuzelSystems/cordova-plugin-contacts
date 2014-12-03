@@ -21,14 +21,14 @@
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
     xmlns:rim="http://www.blackberry.com/ns/widgets"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    id="org.apache.cordova.contacts"
+    id="com.evernym.cordova.contacts"
     version="0.2.16-dev">
 
     <name>Contacts</name>
     <description>Cordova Contacts Plugin</description>
     <license>Apache 2.0</license>
     <keywords>cordova,contacts</keywords>
-    <repo>https://git-wip-us.apache.org/repos/asf/cordova-plugin-contacts.git</repo>
+    <repo>https://github.com/vivektiwari1986/cordova-plugin-contacts.git</repo>
     <issue>https://issues.apache.org/jira/browse/CB/component/12320652</issue>
 
     <js-module src="www/contacts.js" name="contacts">
@@ -71,7 +71,7 @@
     <platform name="android">
         <config-file target="res/xml/config.xml" parent="/*">
             <feature name="Contacts">
-                <param name="android-package" value="org.apache.cordova.contacts.ContactManager"/>
+                <param name="android-package" value="com.evernym.cordova.contacts.ContactManager"/>
             </feature>
         </config-file>
 
@@ -91,7 +91,7 @@
     <platform name="amazon-fireos">
         <config-file target="res/xml/config.xml" parent="/*">
             <feature name="Contacts">
-                <param name="android-package" value="org.apache.cordova.contacts.ContactManager"/>
+                <param name="android-package" value="com.evernym.cordova.contacts.ContactManager"/>
             </feature>
         </config-file>
 
