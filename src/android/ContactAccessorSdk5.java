@@ -262,6 +262,8 @@ public class ContactAccessorSdk5 extends ContactAccessor {
             columnsToFetch.add(ContactsContract.CommonDataKinds.Photo._ID);
         }
         columnsToFetch.add(ContactsContract.CommonDataKinds.GroupMembership.GROUP_ROW_ID);
+        columnsToFetch.add(ContactsContract.RawContacts.ACCOUNT_NAME);
+        columnsToFetch.add(ContactsContract.RawContacts.ACCOUNT_TYPE);
         
         // Do the id query
         Cursor c = mApp.getActivity().getContentResolver().query(ContactsContract.Data.CONTENT_URI,
@@ -269,8 +271,27 @@ public class ContactAccessorSdk5 extends ContactAccessor {
                 idOptions.getWhere(),
                 idOptions.getWhereArgs(),
                 ContactsContract.Data.CONTACT_ID + " ASC");
+
+        Cursor groupCursor = mApp.getActivity().getContentResolver().query(
+                ContactsContract.Groups.CONTENT_URI,
+                new String[]{
+                        ContactsContract.Groups._ID,
+                        ContactsContract.Groups.TITLE
+                }, null, null, null
+        );
+        
+        HashMap<String,String> groups = new HashMap<String, String>();
+        
+        groupCursor.moveToFirst();
+        while (groupCursor.isAfterLast() == false) 
+        {
+            groups.put(groupCursor.getString(0), groupCursor.getString(1));
+            groupCursor.moveToNext();
+        }
+        groupCursor.close();
          
-        JSONArray contacts = populateContactArray(limit, populate, c);
+        JSONArray contacts = populateContactArray(limit, populate, c, groups);
+
         return contacts;
     }
 
@@ -286,6 +307,8 @@ public class ContactAccessorSdk5 extends ContactAccessor {
         return getContactById(id, null); 
     }
     
+    private HashMap<String,String> groupsDefault = new HashMap<String, String>();
+    
     @Override
     public JSONObject getContactById(String id, JSONArray desiredFields) throws JSONException {
         // Do the id query
@@ -300,7 +323,7 @@ public class ContactAccessorSdk5 extends ContactAccessor {
                 new JSONObject().put("desiredFields", desiredFields)
                 );
 
-        JSONArray contacts = populateContactArray(1, populate, c);
+        JSONArray contacts = populateContactArray(1, populate, c, groupsDefault);
 
         if (contacts.length() == 1) {
             return contacts.getJSONObject(0);
@@ -318,7 +341,7 @@ public class ContactAccessorSdk5 extends ContactAccessor {
      * @return             a JSONArray of contacts
      */
     private JSONArray populateContactArray(int limit,
-            HashMap<String, Boolean> populate, Cursor c) {
+            HashMap<String, Boolean> populate, Cursor c, HashMap<String,String> groups) {
 
         String contactId = "";
         String rawId = "";
@@ -328,6 +351,8 @@ public class ContactAccessorSdk5 extends ContactAccessor {
 
         JSONArray contacts = new JSONArray();
         JSONObject contact = new JSONObject();
+        JSONObject group = new JSONObject();
+        JSONObject account = new JSONObject();
         JSONArray organizations = new JSONArray();
         JSONArray addresses = new JSONArray();
         JSONArray phones = new JSONArray();
@@ -346,6 +371,8 @@ public class ContactAccessorSdk5 extends ContactAccessor {
         int colBirthday = c.getColumnIndex(ContactsContract.CommonDataKinds.Event.START_DATE);
         int colEventType = c.getColumnIndex(ContactsContract.CommonDataKinds.Event.TYPE);
         int colGroupIndex = c.getColumnIndex(ContactsContract.Data.DATA1);
+        int colAccountName =  c.getColumnIndex(ContactsContract.RawContacts.ACCOUNT_NAME);
+        int colAccountType =  c.getColumnIndex(ContactsContract.RawContacts.ACCOUNT_TYPE);
 
         if (c.getCount() > 0) {
             while (c.moveToNext() && (contacts.length() <= (limit - 1))) {
@@ -364,7 +391,7 @@ public class ContactAccessorSdk5 extends ContactAccessor {
                         // Populate the Contact object with it's arrays
                         // and push the contact into the contacts array
                         contacts.put(populateContact(contact, organizations, addresses, phones,
-                                emails, ims, websites, photos));
+                                emails, ims, websites, photos, group));
 
                         // Clean up the objects
                         contact = new JSONObject();
@@ -395,7 +422,18 @@ public class ContactAccessorSdk5 extends ContactAccessor {
                         contact.put("displayName", c.getString(colDisplayName));
                     }
                     if (mimetype.equals(ContactsContract.CommonDataKinds.GroupMembership.CONTENT_ITEM_TYPE)) {
-                        contact.put("groupMembership", c.getString(colGroupIndex));
+                        group.put("id", c.getString(colGroupIndex));
+                        if(groups.containsKey(c.getString(colGroupIndex))){
+                            group.put("title", groups.get(c.getString(colGroupIndex)));
+                        }                       
+                    }
+
+                    account.put("type", c.getString(colAccountType));
+                    account.put("name", c.getString(colAccountName));
+                    contact.put("account", account);
+                    
+                    if(!account.get("type").equals("com.google")){
+                        contact.put("account", account);
                     }
 
                     if (mimetype.equals(ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE)
@@ -459,7 +497,7 @@ public class ContactAccessorSdk5 extends ContactAccessor {
             // Push the last contact into the contacts array
             if (contacts.length() < limit) {
                 contacts.put(populateContact(contact, organizations, addresses, phones,
-                        emails, ims, websites, photos));
+                        emails, ims, websites, photos, group));
             }
         }
         c.close();
@@ -515,7 +553,7 @@ public class ContactAccessorSdk5 extends ContactAccessor {
      */
     private JSONObject populateContact(JSONObject contact, JSONArray organizations,
             JSONArray addresses, JSONArray phones, JSONArray emails,
-            JSONArray ims, JSONArray websites, JSONArray photos) {
+            JSONArray ims, JSONArray websites, JSONArray photos, JSONObject group) {
         try {
             // Only return the array if it has at least one entry
             if (organizations.length() > 0) {
@@ -538,6 +576,9 @@ public class ContactAccessorSdk5 extends ContactAccessor {
             }
             if (photos.length() > 0) {
                 contact.put("photos", photos);
+            }
+            if (group.has(gId)) {
+                contact.put("groupMembership", group);
             }
         } catch (JSONException e) {
             Log.e(LOG_TAG, e.getMessage(), e);

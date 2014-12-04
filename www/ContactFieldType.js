@@ -30,6 +30,7 @@
         department:     "department",
         displayName:    "displayName",
         groupMembership:"groupMembership",
+        account:        "account",
         emails:         "emails",
         familyName:     "familyName",
         formatted:      "formatted",
