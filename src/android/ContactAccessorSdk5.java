@@ -395,6 +395,8 @@ public class ContactAccessorSdk5 extends ContactAccessor {
 
                         // Clean up the objects
                         contact = new JSONObject();
+                        group = new JSONObject();
+                        account = new JSONObject();
                         organizations = new JSONArray();
                         addresses = new JSONArray();
                         phones = new JSONArray();
