@@ -554,6 +554,7 @@ public class ContactAccessorSdk5 extends ContactAccessor {
     private JSONObject populateContact(JSONObject contact, JSONArray organizations,
             JSONArray addresses, JSONArray phones, JSONArray emails,
             JSONArray ims, JSONArray websites, JSONArray photos, JSONObject group) {
+        String gId = "id";
         try {
             // Only return the array if it has at least one entry
             if (organizations.length() > 0) {
