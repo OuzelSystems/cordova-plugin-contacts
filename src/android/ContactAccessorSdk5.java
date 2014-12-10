@@ -480,13 +480,14 @@ public class ContactAccessorSdk5 extends ContactAccessor {
                             contact.put("birthday", c.getString(colBirthday));
                         }
                     }
-                    else if (mimetype.equals(ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE)
+                    //Was consuming 80% of the time taken in returning contacts.
+                    /*else if (mimetype.equals(ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE)
                             && isRequired("photos", populate)) {
                         JSONObject photo = photoQuery(c, contactId);
                         if (photo != null) {
                             photos.put(photo);
                         }
-                    }
+                    }*/
                 } catch (JSONException e) {
                     Log.e(LOG_TAG, e.getMessage(), e);
                 }
